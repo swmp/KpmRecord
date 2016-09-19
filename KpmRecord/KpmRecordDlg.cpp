@@ -29,6 +29,7 @@ CKpmRecordDlg::CKpmRecordDlg(CWnd* pParent /*=NULL*/)
 	, m_nKeyCountOfDay(0)
 	, m_nToday(0)
 	, m_nMinute(0)
+	, m_nAvageKeyCount(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -278,9 +279,9 @@ void CKpmRecordDlg::LoadInfo()
 		}		
 	}
 	int nCount = 0;
+	int nTotalKeyCount = 0;
 	while (!fsFile.eof())
 	{	
-		int nTotalKeyCount = 0;
 		memset(szRecordLine, 0, sizeof(szRecordLine));
 		fsFile.getline(szRecordLine, sizeof(szRecordLine));
 		char* pGap = strchr(szRecordLine, '-');
@@ -311,11 +312,11 @@ void CKpmRecordDlg::LoadInfo()
 				m_lRecords.push_back(rd);				
 				++nCount;
 			}	
-		}		
-		if (nCount > 0)
-		{
-			m_nAvageKeyCount = nTotalKeyCount / nCount;
-		}
+		}				
+	}
+	if (nCount > 0)
+	{
+		m_nAvageKeyCount = nTotalKeyCount / nCount;
 	}
 	fsFile.close();
 }
