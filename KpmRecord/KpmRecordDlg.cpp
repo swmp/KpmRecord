@@ -207,7 +207,7 @@ WCHAR wszKpmInfo[256] = { 0 };
 void CKpmRecordDlg::DrawKpmInfo()
 {	
 	memset(wszKpmInfo, 0, sizeof(wszKpmInfo));
-	wsprintf(wszKpmInfo, L"%04d - %04d - %04d\r\n%04d - %04d - %04d", m_nKeyCount, m_nTodayKpm, m_nTopKpm, m_nKeyCountOfDay, m_nAvageKeyCount, m_nTopKeyCount);
+	wsprintf(wszKpmInfo, L"%04d - %04d - %04d\r\n%d - %d - %d", m_nKeyCount, m_nTodayKpm, m_nTopKpm, m_nKeyCountOfDay, m_nAvageKeyCount, m_nTopKeyCount);
 	int  nFullWidth = GetSystemMetrics(SM_CXSCREEN);
 	//int  nFullHeight = GetSystemMetrics(SM_CYSCREEN);
 	HDC hdc = ::GetDC(0);
@@ -279,7 +279,8 @@ void CKpmRecordDlg::LoadInfo()
 	}
 	int nCount = 0;
 	while (!fsFile.eof())
-	{		
+	{	
+		int nTotalKeyCount = 0;
 		memset(szRecordLine, 0, sizeof(szRecordLine));
 		fsFile.getline(szRecordLine, sizeof(szRecordLine));
 		char* pGap = strchr(szRecordLine, '-');
@@ -306,12 +307,15 @@ void CKpmRecordDlg::LoadInfo()
 						m_nKeyCountOfDay = rd.nKeyCount;
 					}					
 				}
+				nTotalKeyCount += rd.nKeyCount;
 				m_lRecords.push_back(rd);				
 				++nCount;
-			}			
-			
+			}	
+		}		
+		if (nCount > 0)
+		{
+			m_nAvageKeyCount = nTotalKeyCount / nCount;
 		}
-		
 	}
 	fsFile.close();
 }
