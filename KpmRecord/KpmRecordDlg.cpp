@@ -193,9 +193,14 @@ void CKpmRecordDlg::UpdateKeyTime()
 	tm* ptNow = new tm();
 	localtime_s(ptNow, &tmNow);	
 	if (ptNow->tm_yday != m_nToday)
-	{
+	{		
 		if (m_nToday)
 		{
+			KpmRecord rd;
+			rd.nDay = m_nToday;
+			rd.nKeyCount = m_nKeyCountOfDay;
+			rd.nKpm = m_nTodayKpm;
+			m_lRecords.push_back(rd);
 			InitRecord();
 		}
 		m_nToday = ptNow->tm_yday;		
@@ -306,7 +311,9 @@ void CKpmRecordDlg::LoadInfo()
 					{
 						m_nTodayKpm = rd.nKpm;
 						m_nKeyCountOfDay = rd.nKeyCount;
-					}					
+						m_lRecords.push_back(rd);
+						continue;//计算平均值时跳过今天
+					}							
 				}
 				nTotalKeyCount += rd.nKeyCount;
 				m_lRecords.push_back(rd);				
